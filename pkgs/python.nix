@@ -1,7 +1,7 @@
 {
   writeShellApplication,
   venv,
-  src,
+  inventree,
   ...
 }:
 
@@ -9,11 +9,11 @@ writeShellApplication rec {
   name = "inventree-python";
   runtimeInputs = [
     venv
-    src
+    inventree
   ];
 
   text = ''
-    INVENTREE_SRC=${src}/src/src/backend
+    INVENTREE_SRC=${inventree}/src/src/backend
     pushd "$INVENTREE_SRC/''${INVENTREE_PYTHON_CWD:-}"
     python "$@"
     popd

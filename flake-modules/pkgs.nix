@@ -2,6 +2,8 @@
 {
   inventree.packages = _self: {
     src = _self.callPackage ../pkgs/src.nix { };
+    frontend = _self.callPackage ../pkgs/frontend.nix { };
+    inventree = _self.callPackage ../pkgs/inventree.nix { };
 
     server = _self.callPackage ../pkgs/server.nix { };
     cluster = _self.callPackage ../pkgs/cluster.nix { };
@@ -21,6 +23,8 @@
       packages = {
         inherit (pkgs.inventree)
           src
+          frontend
+          inventree
           server
           cluster
           invoke

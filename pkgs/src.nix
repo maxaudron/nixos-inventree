@@ -1,103 +1,11 @@
 {
-  stdenv,
   fetchFromGitHub,
-  fetchzip,
-  writeScript,
-  yarn,
-  venv,
-  lib,
   ...
 }:
-stdenv.mkDerivation rec {
-  pname = "inventree-src";
-  version = "1.3.0";
 
-  srcs = [
-    (fetchFromGitHub {
-      name = "inventree-src";
-      owner = "inventree";
-      repo = "InvenTree";
-      rev = version;
-      hash = "sha256-I/BH50XjQDV7StDdJbxnl0Lan83BqwYrLuefKpSlAqE=";
-    })
-    (fetchzip {
-      name = "inventree-frontend";
-      url = "https://github.com/inventree/InvenTree/releases/download/${version}/frontend-build.zip";
-      hash = "sha256-ECpyMSlxH8rjDbQaN5Bi73aiudmMzemeaNkSUCMlaro=";
-      stripRoot = false;
-    })
-  ];
-
-  sourceRoot = ".";
-
-  nativeBuildInputs = [
-    yarn
-    venv
-  ];
-
-  buildPhase = ''
-    echo "Creating build dirs"
-    build=$(pwd)
-    mkdir src static media backup db
-
-    echo "Installing backend source files"
-    pushd inventree-src
-    find . -type f -exec install -Dm 755 "{}" "$build/src/{}" \;
-    popd
-
-    echo "Installing frontend source files"
-    pushd inventree-frontend
-    find . -type f -exec install -Dm 755 "{}" "$build/src/src/backend/InvenTree/web/static/web/{}" \;
-    popd
-
-
-    echo "Patching deprecated django calls"
-    # Patch is_ajax method as it has been deprecated in django.
-    # https://docs.djangoproject.com/en/3.1/releases/3.1/#id2
-    find ./src -name \*.py -exec sed -ie 's,.is_ajax(),.headers.get("x-requested-with") == "XMLHttpRequest",g' "{}" \;
-
-    echo "Building static files"
-    export INVENTREE_SRC=$(pwd)/src
-    export INVENTREE_SITE_URL="http://build.dummy.inventree.com"
-    export INVENTREE_STATIC_ROOT=$(pwd)/static
-    export INVENTREE_MEDIA_ROOT=$(pwd)/media
-    export INVENTREE_BACKUP_DIR=$(pwd)/backup
-    export INVENTREE_DB_ENGINE=sqlite3
-    export INVENTREE_DB_NAME=$(pwd)/db/db.sqlite3
-    pushd $INVENTREE_SRC
-    invoke static
-    popd
-
-    echo "Disabling fs mutation tasks"
-    # Patch out invoke tasks that will attempt to mutate the nix store
-    # after we generate the files
-    patch -p1 < ${../patches/disable-fs-mutation-tasks.patch}
-
-    echo "Enabling support for plugin installation to external dir"
-    patch -p1 < ${../patches/install-ext.patch}
-    patch -p1 < ${../patches/registry-ext.patch}
-  '';
-
-  installPhase = ''
-    runHook  preInstall
-
-    pushd ./src
-    find . -type f -exec install -Dm 755 "{}" "$out/src/{}" \;
-    popd
-
-    for d in static media backup db; do
-      pushd $d
-      find . -type f -exec install -Dm 755 "{}" "$out/$d/{}" \;
-      popd
-    done
-
-    runHook postInstall
-  '';
-
-  meta = with lib; {
-    homepage = "https://github.com/Gigahawk/nixos-inventree";
-    description = "InvenTree packaged for nixos";
-    license = licenses.gpl3;
-    platforms = platforms.all;
-  };
-}
+(fetchFromGitHub {
+  owner = "inventree";
+  repo = "InvenTree";
+  rev = "1.3.0";
+  hash = "sha256-I/BH50XjQDV7StDdJbxnl0Lan83BqwYrLuefKpSlAqE=";
+})

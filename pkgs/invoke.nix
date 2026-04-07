@@ -4,7 +4,7 @@
   yarn,
   bash,
   venv,
-  src,
+  inventree,
   ...
 }:
 
@@ -13,12 +13,12 @@ writeShellApplication rec {
   runtimeInputs = [
     yarn
     venv
-    src
+    inventree
     bash
   ];
 
   text = ''
-    INVENTREE_SRC=${src}/src
+    INVENTREE_SRC=${inventree}/src
     pushd $INVENTREE_SRC > /dev/null 2>&1
     invoke "$@"
     popd > /dev/null 2>&1

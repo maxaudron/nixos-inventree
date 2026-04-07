@@ -2,7 +2,7 @@
   writeShellApplication,
   writeScript,
   venv,
-  src,
+  inventree,
   ...
 }:
 
@@ -19,11 +19,11 @@ writeShellApplication rec {
   name = "inventree-gen-secret";
   runtimeInputs = [
     venv
-    src
+    inventree
   ];
 
   text = ''
-    INVENTREE_SRC=${src}/src/src/backend
+    INVENTREE_SRC=${inventree}/src/src/backend
     INVENTREE_CONFIG_FILE="$(pwd)/config.yaml"
     export INVENTREE_CONFIG_FILE
     INVENTREE_SECRET_KEY_FILE="$(pwd)/secret_key.txt"

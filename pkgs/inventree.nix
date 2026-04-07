@@ -1,0 +1,88 @@
+{
+  stdenv,
+  fetchFromGitHub,
+  fetchzip,
+  writeScript,
+  venv,
+  lib,
+  src,
+  frontend,
+  ...
+}:
+stdenv.mkDerivation rec {
+  pname = "inventree";
+  version = "1.2.1";
+
+  srcs = [
+    src
+    frontend
+  ];
+
+  sourceRoot = ".";
+
+  nativeBuildInputs = [
+    venv
+  ];
+
+  buildPhase = ''
+    echo "Creating build dirs"
+    build=$(pwd)
+    mkdir src static media backup db
+
+    echo "Installing backend source files"
+    pushd source
+    find . -type f -exec install -Dm 755 "{}" "$build/src/{}" \;
+    popd
+
+    echo "Installing frontend source files"
+    pushd inventree-frontend*
+    find . -type f -exec install -Dm 755 "{}" "$build/src/src/backend/InvenTree/web/static/web/{}" \;
+    popd
+
+
+    echo "Patching deprecated django calls"
+    # Patch is_ajax method as it has been deprecated in django.
+    # https://docs.djangoproject.com/en/3.1/releases/3.1/#id2
+    find ./src -name \*.py -exec sed -ie 's,.is_ajax(),.headers.get("x-requested-with") == "XMLHttpRequest",g' "{}" \;
+
+    echo "Building static files"
+    export INVENTREE_SRC=$(pwd)/src
+    export INVENTREE_SITE_URL="http://build.dummy.inventree.com"
+    export INVENTREE_STATIC_ROOT=$(pwd)/static
+    export INVENTREE_MEDIA_ROOT=$(pwd)/media
+    export INVENTREE_BACKUP_DIR=$(pwd)/backup
+    export INVENTREE_DB_ENGINE=sqlite3
+    export INVENTREE_DB_NAME=$(pwd)/db/db.sqlite3
+    pushd $INVENTREE_SRC
+    invoke static
+    popd
+
+    echo "Disabling fs mutation tasks"
+    # Patch out invoke tasks that will attempt to mutate the nix store
+    # after we generate the files
+    patch -p1 < ${../patches/disable-fs-mutation-tasks.patch}
+  '';
+
+  installPhase = ''
+    runHook  preInstall
+
+    pushd ./src
+    find . -type f -exec install -Dm 755 "{}" "$out/src/{}" \;
+    popd
+
+    for d in static media backup db; do
+      pushd $d
+      find . -type f -exec install -Dm 755 "{}" "$out/$d/{}" \;
+      popd
+    done
+
+    runHook postInstall
+  '';
+
+  meta = with lib; {
+    homepage = "https://github.com/Gigahawk/nixos-inventree";
+    description = "InvenTree packaged for nixos";
+    license = licenses.gpl3;
+    platforms = platforms.all;
+  };
+}

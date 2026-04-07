@@ -48,7 +48,7 @@
         };
 
         inherit (cfg.packages)
-          src
+          inventree
           server
           cluster
           invoke
@@ -324,7 +324,7 @@
                 ${invoke}/bin/inventree-invoke migrate
 
                 echo "Ensuring static files are populated"
-                pushd ${src}/static
+                pushd ${inventree}/static
                 find . -type f -exec install -Dm 644 "{}" "${cfg.config.static_root}/{}" \;
                 popd
 

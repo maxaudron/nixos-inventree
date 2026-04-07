@@ -2,7 +2,7 @@
   writeShellApplication,
   writeScript,
   venv,
-  src,
+  inventree,
   ...
 }:
 
@@ -14,11 +14,11 @@ writeShellApplication rec {
   name = "inventree-refresh-users";
   runtimeInputs = [
     venv
-    src
+    inventree
   ];
 
   text = ''
-    INVENTREE_SRC=${src}/src/src/backend
+    INVENTREE_SRC=${inventree}/src/src/backend
     pushd $INVENTREE_SRC/InvenTree > /dev/null 2>&1
     python ${refreshScript}
     popd > /dev/null 2>&1
