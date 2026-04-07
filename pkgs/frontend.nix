@@ -13,7 +13,7 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "inventree-frontend";
-  version = "0.7.0";
+  version = "0.10.0";
 
   inherit src;
 
@@ -26,10 +26,11 @@ stdenv.mkDerivation (finalAttrs: {
 
   yarnOfflineCache = fetchYarnDeps {
     yarnLock = finalAttrs.src + "/src/frontend/yarn.lock";
-    hash = "sha256-tZHrl6NC4MGpmH7+Ge2V/y9FRNd9NdbQ/NreHE10b10=";
+    hash = "sha256-PIhmMIFHW+6jVZcS394yU9L5Zn+wkfrWmJH7lAbevbU=";
   };
 
   preBuild = ''
+    yarn extract
     yarn compile
   '';
 
