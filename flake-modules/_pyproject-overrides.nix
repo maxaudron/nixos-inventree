@@ -71,5 +71,9 @@ final: prev: {
   inventree-kicad-plugin = (
     final.callPackage ../plugins/inventree-kicad-plugin.nix { inherit prev; }
   );
+  
+  inventree-ipn-generator = (
+    final.callPackage ../plugins/inventree-ipn-generator.nix { inherit prev; }
+  );
 
 }
