@@ -3,7 +3,7 @@
   fetchFromGitHub,
   pyprojectHook,
   resolveBuildSystem,
-  prev,
+  final,
 }:
 stdenv.mkDerivation rec {
   pname = "inventree-kicad-plugin";
@@ -25,7 +25,7 @@ stdenv.mkDerivation rec {
   ++ resolveBuildSystem { flit-core = [ ]; };
 
   buildInputs = [
-    prev.setuptools
+    final.setuptools
   ];
 
   # Dependencies go in passthru to avoid polluting runtime package.

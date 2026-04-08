@@ -7,14 +7,14 @@
   final,
 }:
 stdenv.mkDerivation (finalAttrs: {
-  pname = "inventree-ipn-generator";
-  version = "0.1.2";
+  pname = "brother-ql-inventree";
+  version = "1.4a1";
   src = (
     fetchFromGitHub {
-      owner = "LavissaWoW";
-      repo = "inventree-ipn-generator";
-      rev = "2e745eb435e6d4ec942f502435bdcc6e2154777b";
-      hash = "sha256-JPAAtEluqhwFgnHHyZidZ33Nkutow+Q+ma9H2fLn6Zw=";
+      owner = "matmair";
+      repo = "brother_ql-inventree/";
+      rev = "5364d30e0ad088fa943642a05863814390d52b4f";
+      hash = "sha256-wSekzrpiOeyT51Wlf7haLpPhbY6/PWtZljG88ihrMKo=";
     }
   );
   nativeBuildInputs = [
@@ -31,6 +31,12 @@ stdenv.mkDerivation (finalAttrs: {
 
   # Dependencies go in passthru to avoid polluting runtime package.
   passthru = {
-    #inherit (lockpkg) dependencies optional-dependencies;
+    dependencies = {
+      click = [ ];
+      packbits = [ ];
+      pillow = [ ];
+      pyusb = [ ];
+      attrs = [ ];
+    };
   };
 })

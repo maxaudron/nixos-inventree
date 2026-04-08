@@ -10,6 +10,22 @@ final: prev: {
   };
   #binaryornot = prev.binaryornot;
 
+  click = final.hacks.nixpkgsPrebuilt {
+    from = final.python.pkgs.click;
+  };
+
+  packbits = final.hacks.nixpkgsPrebuilt {
+    from = final.python.pkgs.packbits;
+  };
+
+  pyusb = final.hacks.nixpkgsPrebuilt {
+    from = final.python.pkgs.pyusb;
+  };
+
+  poppler = final.hacks.nixpkgsPrebuilt {
+    from = final.python.pkgs.python-poppler;
+  };
+
   django-allauth = prev.django-allauth.overrideAttrs (old: {
     buildInputs = (old.buildInputs or [ ]) ++ [
       prev.setuptools
@@ -66,14 +82,19 @@ final: prev: {
     ];
   });
 
+  brother-ql-inventree = final.callPackage ../pkgs/brother-ql-inventree.nix { inherit final; };
+
   # Plugins
   # TODO: is there a nice way to not have to inherit prev?
   inventree-kicad-plugin = (
-    final.callPackage ../plugins/inventree-kicad-plugin.nix { inherit prev; }
-  );
-  
-  inventree-ipn-generator = (
-    final.callPackage ../plugins/inventree-ipn-generator.nix { inherit prev; }
+    final.callPackage ../plugins/inventree-kicad-plugin.nix { inherit final; }
   );
 
+  inventree-ipn-generator = (
+    final.callPackage ../plugins/inventree-ipn-generator.nix { inherit final; }
+  );
+
+  inventree-brother-plugin = (
+    final.callPackage ../plugins/inventree-brother-plugin.nix { inherit final; }
+  );
 }

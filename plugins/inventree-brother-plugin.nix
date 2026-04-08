@@ -7,14 +7,14 @@
   final,
 }:
 stdenv.mkDerivation (finalAttrs: {
-  pname = "inventree-ipn-generator";
-  version = "0.1.2";
+  pname = "inventree-brother-plugin";
+  version = "2.0.5";
   src = (
     fetchFromGitHub {
-      owner = "LavissaWoW";
-      repo = "inventree-ipn-generator";
-      rev = "2e745eb435e6d4ec942f502435bdcc6e2154777b";
-      hash = "sha256-JPAAtEluqhwFgnHHyZidZ33Nkutow+Q+ma9H2fLn6Zw=";
+      owner = "inventree";
+      repo = "inventree-brother-plugin";
+      rev = finalAttrs.version;
+      hash = "sha256-rx2HcxvBcI88GZWIuXEB39LY+RtmUopU/5+sZkNe+lc=";
     }
   );
   nativeBuildInputs = [
@@ -31,6 +31,8 @@ stdenv.mkDerivation (finalAttrs: {
 
   # Dependencies go in passthru to avoid polluting runtime package.
   passthru = {
-    #inherit (lockpkg) dependencies optional-dependencies;
+    dependencies = {
+      brother-ql-inventree = [ ];
+    };
   };
 })

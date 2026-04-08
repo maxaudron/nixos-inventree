@@ -2,6 +2,7 @@
   writeShellApplication,
   venv,
   inventree,
+  poppler-utils,
   ...
 }:
 
@@ -10,6 +11,7 @@ writeShellApplication rec {
   runtimeInputs = [
     venv
     inventree
+    poppler-utils
   ];
 
   text = ''
